@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}我的旅行{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>✈️ 我的旅行</h1>
+        <div class="header-actions">
+            <span class="username">👤 {{ username }}</span>
+            <button onclick="handleLogout()" class="btn-secondary">登出</button>
+        </div>
+    </header>
+
+    <button onclick="showCreateTripModal()" class="btn-create">+ 创建新旅行</button>
+
+    <div class="trips-grid">
+        {% if trips %}
+        {% for trip in trips %}
+        <div class="trip-card" onclick="location.href='/trip/{{ trip.id }}'">
+            <div class="trip-status trip-status-{{ trip.status }}">
+                {% if trip.status == 'planning' %}📋 计划中
+                {% elif trip.status == 'ongoing' %}🏃 进行中
+                {% else %}✅ 已完成{% endif %}
+            </div>
+            <h3 class="trip-title">{{ trip.title }}</h3>
+            <p class="trip-dates">📅 {{ trip.start_date }} 至 {{ trip.end_date }}</p>
+            <p class="trip-creator">👤 创建者: {{ trip.creator_name }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <p>还没有旅行记录</p>
+            <p>点击上方按钮创建第一次旅行吧！</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 创建旅行模态框 -->
+<div id="create-trip-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="hideCreateTripModal()">&times;</span>
+        <h2>创建新旅行</h2>
+        <input type="text" id="trip-title" placeholder="旅行标题" class="input-field">
+        <input type="date" id="trip-start-date" class="input-field">
+        <input type="date" id="trip-end-date" class="input-field">
+        <button onclick="createTrip()" class="btn-primary">创建</button>
+    </div>
+</div>
+
+<script>
+    async function handleLogout() {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/auth';
+        } catch (error) {
+            alert('登出失败');
+        }
+    }
+
+    function showCreateTripModal() {
+        document.getElementById('create-trip-modal').style.display = 'flex';
+    }
+
+    function hideCreateTripModal() {
+        document.getElementById('create-trip-modal').style.display = 'none';
+    }
+
+    async function createTrip() {
+        const title = document.getElementById('trip-title').value;
+        const startDate = document.getElementById('trip-start-date').value;
+        const endDate = document.getElementById('trip-end-date').value;
+
+        if (!title || !startDate || !endDate) {
+            alert('请填写所有字段');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/trip/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, start_date: startDate, end_date: endDate })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('创建失败');
+        }
+    }
+
+    // 点击模态框外部关闭
+    window.onclick = function (event) {
+        const modal = document.getElementById('create-trip-modal');
+        if (event.target == modal) {
+            hideCreateTripModal();
+        }
+    }
+</script>
+{% endblock %}

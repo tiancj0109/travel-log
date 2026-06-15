@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}创建旅行{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 2rem auto;">
+    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem;">创建新旅行</h1>
+
+    <form method="POST" action="{{ url_for('trip_create') }}" class="card">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">基本信息</h2>
+
+        <div class="form-group">
+            <label class="form-label" for="title">旅行标题 *</label>
+            <input type="text" id="title" name="title" class="form-input" required autofocus
+                placeholder="例如：2024年春节日本之旅">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="description">旅行描述</label>
+            <textarea id="description" name="description" class="form-textarea" placeholder="简单描述一下这次旅行..."></textarea>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">前期计划 <small
+                style="font-size: 0.875rem; color: var(--text-muted);">(可选，稍后也可以填写)</small></h2>
+
+        <div class="form-group">
+            <label class="form-label" for="timeline">时间线</label>
+            <input type="text" id="timeline" name="timeline" class="form-input" placeholder="例如：2024年2月10日 - 2月20日">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="location">目的地</label>
+            <input type="text" id="location" name="location" class="form-input" placeholder="例如：日本东京、大阪、京都">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="supplies">准备物资</label>
+            <textarea id="supplies" name="supplies" class="form-textarea"
+                placeholder="列出需要准备的物品，例如：护照、签证、相机、充电器..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="notes">备注</label>
+            <textarea id="notes" name="notes" class="form-textarea" placeholder="其他想记录的内容..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                创建旅行
+            </button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                取消
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

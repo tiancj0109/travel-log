@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}旅行记录{% endblock %} - Travel Log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    {% if session.get('user_id') %}
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('index') }}" class="navbar-brand">✈️ Travel Log</a>
+            <div class="navbar-menu">
+                <a href="{{ url_for('index') }}" class="navbar-link">我的旅行</a>
+                <a href="{{ url_for('trip_create') }}" class="navbar-link">创建旅行</a>
+                <span class="navbar-link">👤 {{ session.get('username') }}</span>
+                <a href="{{ url_for('logout') }}" class="navbar-link">退出</a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Flash消息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- 主内容 -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

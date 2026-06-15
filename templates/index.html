@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}我的旅行{% endblock %}
+
+{% block content %}
+<div style="margin-top: 2rem;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <h1 style="font-size: 2rem; font-weight: 700;">我的旅行</h1>
+        <a href="{{ url_for('trip_create') }}" class="btn btn-primary">
+            ➕ 创建新旅行
+        </a>
+    </div>
+
+    {% if trips %}
+    <div class="grid grid-2">
+        {% for trip in trips %}
+        <div class="card" onclick="window.location.href='{{ url_for('trip_detail', trip_id=trip.id) }}'"
+            style="cursor: pointer;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; flex: 1;">
+                    {{ trip.title }}
+                </h3>
+                {% if trip.status == 'pre' %}
+                <span class="status-badge status-pre">准备中</span>
+                {% elif trip.status == 'during' %}
+                <span class="status-badge status-during">旅行中</span>
+                {% else %}
+                <span class="status-badge status-post">已结束</span>
+                {% endif %}
+            </div>
+
+            {% if trip.description %}
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
+                {{ trip.description[:100] }}{% if trip.description|length > 100 %}...{% endif %}
+            </p>
+            {% endif %}
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--text-muted);">
+                <span>👤 {{ trip.creator_name }}</span>
+                <span>📅 {{ trip.created_at.strftime('%Y-%m-%d') }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding: 4rem 2rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">✈️</div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary);">
+            还没有旅行记录
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+            开始创建你的第一个旅行计划吧！
+        </p>
+        <a href="{{ url_for('trip_create') }}" class="btn btn-primary">
+            创建第一个旅行
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
